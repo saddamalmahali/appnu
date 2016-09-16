@@ -8,12 +8,13 @@ use Yii;
  * This is the model class for table "alamat_anggota".
  *
  * @property integer $id
+ * @property integer $id_anggota
  * @property string $rt
  * @property string $rw
  * @property integer $desakelurahan
  * @property integer $kecamatan
  *
- * @property Anggota[] $anggotas
+ * @property Anggota $idAnggota
  */
 class AlamatAnggota extends \yii\db\ActiveRecord
 {
@@ -31,10 +32,11 @@ class AlamatAnggota extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['rt', 'rw', 'desakelurahan', 'kecamatan'], 'required'],
-            [['desakelurahan', 'kecamatan'], 'integer'],
+            [['id_anggota', 'rt', 'rw', 'desakelurahan', 'kecamatan'], 'required'],
+            [['id_anggota', 'desakelurahan', 'kecamatan'], 'integer'],
             [['rt'], 'string', 'max' => 10],
             [['rw'], 'string', 'max' => 45],
+            [['id_anggota'], 'exist', 'skipOnError' => true, 'targetClass' => Anggota::className(), 'targetAttribute' => ['id_anggota' => 'id']],
         ];
     }
 
@@ -45,6 +47,7 @@ class AlamatAnggota extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'id_anggota' => 'Id Anggota',
             'rt' => 'Rt',
             'rw' => 'Rw',
             'desakelurahan' => 'Desakelurahan',
@@ -55,8 +58,8 @@ class AlamatAnggota extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAnggotas()
+    public function getIdAnggota()
     {
-        return $this->hasMany(Anggota::className(), ['alamat' => 'id']);
+        return $this->hasOne(Anggota::className(), ['id' => 'id_anggota']);
     }
 }

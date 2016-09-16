@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\master\models\Anggota */
 
-$this->title = 'Create Anggota';
+$this->title = 'Tambah Anggota';
 $this->params['breadcrumbs'][] = ['label' => 'Anggotas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="box-body">
           <?= $this->render('_form', [
               'model' => $model,
+              'modelAlamat'=>$modelAlamat
           ]) ?>
         </div>
       </div>

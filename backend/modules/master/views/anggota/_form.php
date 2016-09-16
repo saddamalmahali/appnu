@@ -28,77 +28,72 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
         <?= $form->field($model, 'jenis_kelamin')->dropDownList([ 'laki-laki' => 'Laki-laki', 'perempuan' => 'Perempuan', ], ['prompt' => '']) ?>
 
-        <?= $form->field($model, 'alamat')->textInput() ?>
       </div>
 
       <div class="col-md-12">
+        <?php DynamicFormWidget::begin([
+            'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
+            'widgetBody' => '.container-items', // required: css class selector
+            'widgetItem' => '.item', // required: css class
+            'limit' => 4, // the maximum times, an element can be cloned (default 999)
+            'min' => 1, // 0 or 1 (default 1)
+            'insertButton' => '.add-item', // css class
+            'deleteButton' => '.remove-item', // css class
+            'model' => $modelAlamat[0],
+            'formId' => 'dynamic-form',
+            'formFields' => [
+                'id',
+                'id_anggota',
+                'rt',
+                'rw',
+                'desakelurahan',
+                'kecamatan',
+            ],
+        ]); ?>
         <div class="panel panel-info">
           <div class="panel-heading">
-            <h3 class="panel-title">Alamat Anggota</h3>
+            <h3 class="panel-title">Alamat Anggota
+              <div class="pull-right">
+                <button type="button" class="add-item btn btn-success btn-xs"><i class="glyphicon glyphicon-plus"></i></button>
+
+              </div>
+            </h3>
+
           </div>
           <div class="panel-body">
-            <?php DynamicFormWidget::begin([
-                'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
-                'widgetBody' => '.container-items', // required: css class selector
-                'widgetItem' => '.item', // required: css class
-                'limit' => 4, // the maximum times, an element can be cloned (default 999)
-                'min' => 1, // 0 or 1 (default 1)
-                'insertButton' => '.add-item', // css class
-                'deleteButton' => '.remove-item', // css class
-                'model' => $modelsAddress[0],
-                'formId' => 'dynamic-form',
-                'formFields' => [
-                    'full_name',
-                    'address_line1',
-                    'address_line2',
-                    'city',
-                    'state',
-                    'postal_code',
-                ],
-            ]); ?>
+            <table class="table table-responsive container-items">
+              <thead>
+                <tr>
+                  <th colspan="2"><center>RT/RW</center></th>
+                  <th rowspan="2" style="vertical-align:middle;"><center>Kelurahan/Desa</center></th>
+                  <th rowspan="2" style="vertical-align:middle;"><center>Kecamatan</center></th>
+                  <th rowspan="2" style="vertical-align:middle;"><center>Opsi</center></th>
+                </tr>
+                <tr>
+                  <th><center>RT</center></th>
+                  <th><center>RW</center></th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($modelAlamat as $i => $alamat): ?>
+                <?php
+                    // necessary for update action.
+                    if (! $alamat->isNewRecord) {
+                        echo Html::activeHiddenInput($alamat, "[{$i}]id");
+                    }
+                ?>
+                <tr class="item">
+                  <td><?= $form->field($alamat, "[{$i}]rt")->textInput(['maxlength' => true])->label(false) ?></td>
+                  <td><?= $form->field($alamat, "[{$i}]rw")->textInput(['maxlength' => true])->label(false) ?></td>
+                  <td><?= $form->field($alamat, "[{$i}]desakelurahan")->textInput(['maxlength' => true])->label(false) ?></td>
+                  <td><?= $form->field($alamat, "[{$i}]kecamatan")->textInput(['maxlength' => true])->label(false) ?></td>
+                  <td><button type="button" class="remove-item btn btn-danger btn-xs"><i class="glyphicon glyphicon-minus"></i></button></td>
+                </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
 
-            <div class="container-items"><!-- widgetContainer -->
-            <?php foreach ($modelsAddress as $i => $modelAddress): ?>
-                <div class="item panel panel-default"><!-- widgetBody -->
-                    <div class="panel-heading">
-                        <h3 class="panel-title pull-left">Address</h3>
-                        <div class="pull-right">
-                            <button type="button" class="add-item btn btn-success btn-xs"><i class="glyphicon glyphicon-plus"></i></button>
-                            <button type="button" class="remove-item btn btn-danger btn-xs"><i class="glyphicon glyphicon-minus"></i></button>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="panel-body">
-                        <?php
-                            // necessary for update action.
-                            if (! $modelAddress->isNewRecord) {
-                                echo Html::activeHiddenInput($modelAddress, "[{$i}]id");
-                            }
-                        ?>
-                        <?= $form->field($modelAddress, "[{$i}]full_name")->textInput(['maxlength' => true]) ?>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <?= $form->field($modelAddress, "[{$i}]address_line1")->textInput(['maxlength' => true]) ?>
-                            </div>
-                            <div class="col-sm-6">
-                                <?= $form->field($modelAddress, "[{$i}]address_line2")->textInput(['maxlength' => true]) ?>
-                            </div>
-                        </div><!-- .row -->
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <?= $form->field($modelAddress, "[{$i}]city")->textInput(['maxlength' => true]) ?>
-                            </div>
-                            <div class="col-sm-4">
-                                <?= $form->field($modelAddress, "[{$i}]state")->textInput(['maxlength' => true]) ?>
-                            </div>
-                            <div class="col-sm-4">
-                                <?= $form->field($modelAddress, "[{$i}]postal_code")->textInput(['maxlength' => true]) ?>
-                            </div>
-                        </div><!-- .row -->
-                    </div>
-                </div>
-            <?php endforeach; ?>
-            </div>
+
             <?php DynamicFormWidget::end(); ?>
           </div>
         </div>

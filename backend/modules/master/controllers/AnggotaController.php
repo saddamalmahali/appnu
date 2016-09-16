@@ -4,10 +4,14 @@ namespace app\modules\master\controllers;
 
 use Yii;
 use app\modules\master\models\Anggota;
+use app\modules\master\models\AlamatAnggota;
 use app\modules\master\models\AnggotaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use app\models\Model;
+use yii\helpers\ArrayHelper;
 
 /**
  * AnggotaController implements the CRUD actions for Anggota model.
@@ -63,15 +67,55 @@ class AnggotaController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Anggota();
+        $model = new Anggota;
+        $modelAlamat = [new AlamatAnggota];
+        if ($model->load(Yii::$app->request->post())) {
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+            $modelAlamat = Model::createMultiple(AlamatAnggota::classname());
+            Model::loadMultiple($modelAlamat, Yii::$app->request->post());
+
+            //Ajax validation
+            if(Yii::$app->request->isAjax){
+              Yii::$app->response->format = Response::FORMAT_JSON;
+              return ArrayHelper::merge(
+                ActiveForm::validateMultiple($modelAlamat),
+                ActiveForm::validate($model)
+              );
+            }
+
+            //validate all models
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($modelAlamat) && $valid;
+
+            if($valid){
+              $transaction = \Yii::$app->db->beginTransaction();
+              try{
+                if($flag = $model->save(false)){
+                  foreach ($modelAlamat as $alamat) {
+                    $alamat->id_anggota = $model->id;
+                    if(!($flag = $modelAlamat->save(flase))){
+                      $transaction->rollBack();
+                      break;
+                    }
+                  }
+                }
+
+                if($flag){
+                  $transaction->commit();
+                  return $this->redirect(['index']);
+                }
+              }catch(Exception $e){
+                $transaction->rollback();
+              }
+            }
+
+
         }
+        return $this->render('create', [
+          'model' => $model,
+          'modelAlamat'=>$modelAlamat
+        ]);
+
     }
 
     /**

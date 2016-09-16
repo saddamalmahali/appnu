@@ -18,7 +18,7 @@ class AnggotaSearch extends Anggota
     public function rules()
     {
         return [
-            [['id', 'alamat'], 'integer'],
+            [['id'], 'integer'],
             [['kode_anggota', 'nama_anggota', 'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin'], 'safe'],
         ];
     }
@@ -61,7 +61,6 @@ class AnggotaSearch extends Anggota
         $query->andFilterWhere([
             'id' => $this->id,
             'tanggal_lahir' => $this->tanggal_lahir,
-            'alamat' => $this->alamat,
         ]);
 
         $query->andFilterWhere(['like', 'kode_anggota', $this->kode_anggota])
