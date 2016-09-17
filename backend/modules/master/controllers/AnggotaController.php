@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 use app\models\Model;
 use yii\helpers\ArrayHelper;
-
+use yii\helpers\Json;
 /**
  * AnggotaController implements the CRUD actions for Anggota model.
  */
@@ -69,6 +69,7 @@ class AnggotaController extends Controller
     {
         $model = new Anggota;
         $modelAlamat = [new AlamatAnggota];
+
         if ($model->load(Yii::$app->request->post())) {
 
             $modelAlamat = Model::createMultiple(AlamatAnggota::classname());
@@ -87,13 +88,13 @@ class AnggotaController extends Controller
             $valid = $model->validate();
             $valid = Model::validateMultiple($modelAlamat) && $valid;
 
-            if($valid){
+            if(!$valid){
               $transaction = \Yii::$app->db->beginTransaction();
               try{
                 if($flag = $model->save(false)){
                   foreach ($modelAlamat as $alamat) {
                     $alamat->id_anggota = $model->id;
-                    if(!($flag = $modelAlamat->save(flase))){
+                    if(!($flag = $alamat->save(false))){
                       $transaction->rollBack();
                       break;
                     }
@@ -113,7 +114,7 @@ class AnggotaController extends Controller
         }
         return $this->render('create', [
           'model' => $model,
-          'modelAlamat'=>$modelAlamat
+          'modelAlamat'=>(empty($modelAlamat)) ? [new ModelAlamat] : $modelAlamat
         ]);
 
     }

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use wbraganca\dynamicform\DynamicFormWidget;
+use kartik\widgets\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\master\models\Anggota */
@@ -24,7 +25,18 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
 
       <div class="col-md-6">
-        <?= $form->field($model, 'tanggal_lahir')->textInput() ?>
+        <?= $form->field($model, 'tanggal_lahir')->widget(DatePicker::classname(), [
+            'value'=>date('yyyy-mm-dd', strtotime('+2 days')),
+            'options'=>[
+              'placeholder'=>'Pilih Tanggal'
+            ],
+            'pluginOptions'=>[
+              'autoclose'=>true,
+              'format'=>'yyyy-mm-dd',
+              'todayHighlight'=>true
+            ]
+
+          ]) ?>
 
         <?= $form->field($model, 'jenis_kelamin')->dropDownList([ 'laki-laki' => 'Laki-laki', 'perempuan' => 'Perempuan', ], ['prompt' => '']) ?>
 
