@@ -119,6 +119,34 @@ class AnggotaController extends Controller
 
     }
 
+    public function actionListKecamatan(){
+      $model = new AlamatAnggota;
+      $out = [];
+      if (isset($_POST['depdrop_parents'])) {
+          $parents = $_POST['depdrop_parents'];
+          if ($parents != null) {
+              $cat_id = $parents[0];
+              $out = $this->getDesa($model, $cat_id);
+              // the getSubCatList function will query the database based on the
+              // cat_id and return an array like below:
+              // [
+              //    ['id'=>'<sub-cat-id-1>', 'name'=>'<sub-cat-name1>'],
+              //    ['id'=>'<sub-cat_id_2>', 'name'=>'<sub-cat-name2>']
+              // ]
+              echo Json::encode(['output'=>$out, 'selected'=>'']);
+              return;
+          }
+      }
+      echo Json::encode(['output'=>'', 'selected'=>'']);
+    }
+
+    protected function getDesa($id_kecamatan){
+        $model = new AlamatAnggota;
+        return $model->getDesaByKecamatan($id_kecamatan);
+    }
+
+
+
     /**
      * Updates an existing Anggota model.
      * If update is successful, the browser will be redirected to the 'view' page.

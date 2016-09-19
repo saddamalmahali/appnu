@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use wbraganca\dynamicform\DynamicFormWidget;
 use kartik\widgets\DatePicker;
+use kartik\widgets\DepDrop;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\master\models\Anggota */
@@ -77,8 +79,8 @@ use kartik\widgets\DatePicker;
               <thead>
                 <tr>
                   <th colspan="2"><center>RT/RW</center></th>
-                  <th rowspan="2" style="vertical-align:middle;"><center>Kelurahan/Desa</center></th>
                   <th rowspan="2" style="vertical-align:middle;"><center>Kecamatan</center></th>
+                  <th rowspan="2" style="vertical-align:middle;"><center>Kelurahan Desa</center></th>
                   <th rowspan="2" style="vertical-align:middle;"><center>Opsi</center></th>
                 </tr>
                 <tr>
@@ -97,8 +99,15 @@ use kartik\widgets\DatePicker;
                 <tr class="item">
                   <td><?= $form->field($alamat, "[{$i}]rt")->textInput(['maxlength' => true])->label(false) ?></td>
                   <td><?= $form->field($alamat, "[{$i}]rw")->textInput(['maxlength' => true])->label(false) ?></td>
-                  <td><?= $form->field($alamat, "[{$i}]desakelurahan")->textInput(['maxlength' => true])->label(false) ?></td>
-                  <td><?= $form->field($alamat, "[{$i}]kecamatan")->textInput(['maxlength' => true])->label(false) ?></td>
+                  <td><?= $form->field($alamat, "[{$i}]kecamatan")->dropDownList($alamat->getListKecamatan(), ['id'=>'alamat-id'])->label(false) ?></td>
+                  <td><?= $form->field($alamat, "[{$i}]desakelurahan")->widget(DepDrop::classname(), [
+                          'options'=>['id'=>'subalamat-id'],
+                          'pluginOptions'=>[
+                              'depends'=>['alamat-id'],
+                              'placeholder'=>'Select...',
+                              'url'=>Url::to(['/master/anggota/list-kecamatan'])
+                          ]
+                      ])->label(false) ?></td>
                   <td><button type="button" class="remove-item btn btn-danger btn-xs"><i class="glyphicon glyphicon-minus"></i></button></td>
                 </tr>
                 <?php endforeach; ?>

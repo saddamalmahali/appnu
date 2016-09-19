@@ -15,6 +15,7 @@
                     ['label' => 'Master Data', 'icon' => 'fa fa-download', 'url' => ['#'],
                       'items'=>[
                           ['label' => 'Data Kelompok Wilayah', 'icon' => 'fa fa-map-o', 'url' => ['/master/kelompok-wilayah']],
+                          ['label' => 'Data Anggota', 'icon' => 'fa fa-male', 'url' => ['/master/anggota']],
                       ]
                     ],
 

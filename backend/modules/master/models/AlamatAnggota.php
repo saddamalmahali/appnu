@@ -3,7 +3,8 @@
 namespace app\modules\master\models;
 
 use Yii;
-
+use common\models\InfLokasi;
+use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "alamat_anggota".
  *
@@ -61,5 +62,18 @@ class AlamatAnggota extends \yii\db\ActiveRecord
     public function getIdAnggota()
     {
         return $this->hasOne(Anggota::className(), ['id' => 'id_anggota']);
+    }
+
+    public function getListKecamatan(){
+      $kecamatan = InfLokasi::find()->where(['lokasi_propinsi'=>32, 'lokasi_kabupatenkota'=>05, 'lokasi_kelurahan'=>00])->andWhere('lokasi_kecamatan>0')->all();
+
+      return ArrayHelper::map($kecamatan, 'lokasi_ID', 'lokasi_nama');
+    }
+
+    public function getDesaByKecamatan($id_kecamatan){
+      $kecamatan = (int) $id_kecamatan;
+      $desa = InfLokasi::find()->where(['lokasi_propinsi'=>32, 'lokasi_kabupatenkota'=>05, 'lokasi_kelurahan'=>00, 'lokasi_kecamatan'=>$kecamatan])->andWhere('lokasi_kecamatan>0')->all();
+
+      return ArrayHelper::map($desa, 'lokasi_ID', 'lokasi_nama');
     }
 }

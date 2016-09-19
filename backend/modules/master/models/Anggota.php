@@ -4,6 +4,7 @@ namespace app\modules\master\models;
 
 use Yii;
 
+
 /**
  * This is the model class for table "anggota".
  *
